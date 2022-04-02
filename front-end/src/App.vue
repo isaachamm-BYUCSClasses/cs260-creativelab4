@@ -5,7 +5,7 @@
       <img class="icon" src="../public/images/firepit.png" />
     </router-link>
     <div class="title">
-      <h1>The firepit: A group blog. Share your thoughts with us!</h1>  
+      <h1>The Firepit: A group blog. Share your thoughts with us!</h1>  
       <router-link to="/">Home</router-link> |
       <router-link to="/posts">The Firepit</router-link> |
       <router-link to="/add">Add a post!</router-link>
@@ -16,7 +16,7 @@
   </div>
   <div class="footer">
     <!-- Add git repository here -->
-    <router-link to="/admin">Github: </router-link>
+    <a href="https://github.com/isaachamm/cs260-creativelab4">Github repo</a>
   </div>
 </div>
 </template>
