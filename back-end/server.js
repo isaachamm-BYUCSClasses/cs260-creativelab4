@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({
 
 
 // connect to the database
-mongoose.connect("mongodb+srv://isaachamm:@cluster0.u78fx.mongodb.net/myFirstDatabase", {
+mongoose.connect("mongodb+srv://isaachamm:iSaac-0402@cluster0.u78fx.mongodb.net/myFirstDatabase", {
   useNewUrlParser: true
 });
 
@@ -34,22 +34,24 @@ const upload = multer({
   }
 });
 
-// Create a scheme for items in the museum: a title and a path to an image.
-const itemSchema = new mongoose.Schema({
+// Create a scheme for posts in the museum: a title and a path to an image.
+const postSchema = new mongoose.Schema({
+  name: String,
   title: String,
   path: String,
-  description: String,
+  post: String,
+  date: String,
 });
 
-// Create a model for items in the museum.
-const Item = mongoose.model('Item', itemSchema);
+// Create a model for posts in the museum.
+const Post = mongoose.model('Post', postSchema);
 
-// Get a list of all of the items in the museum.
-app.get('/api/items', async (req, res) => {
+// Get a list of all of the posts in the museum.
+app.get('/api/posts', async (req, res) => {
   // console.log("GET is happening")
   try {
-    let items = await Item.find();
-    res.send(items);
+    let posts = await Post.find();
+    res.send(posts);
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
@@ -68,25 +70,27 @@ app.post('/api/photos', upload.single('photo'), async (req, res) => {
   });
 });
 
-// Create a new item in the museum: takes a title and a path to an image.
-app.post('/api/items', async (req, res) => {
-  const item = new Item({
+// Create a new post in the museum: takes a title and a path to an image.
+app.post('/api/posts', async (req, res) => {
+  const post = new Post({
+    name: req.body.name,
     title: req.body.title,
     path: req.body.path,
-    description: req.body.description,
+    post: req.body.post,
+    date: req.body.date,
   });
   try {
-    await item.save();
-    res.send(item);
+    await post.save();
+    res.send(post);
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
   }
 });
 
-app.delete('/api/items/:id', async (req, res) => {
+app.delete('/api/posts/:id', async (req, res) => {
   try {
-    await Item.deleteOne({
+    await Post.deleteOne({
       _id: req.params.id
     });
     res.sendStatus(200);
@@ -96,12 +100,14 @@ app.delete('/api/items/:id', async (req, res) => {
   }
 });
 
-app.put('/api/items/:id', async (req, res) => {
+app.put('/api/posts/:id', async (req, res) => {
     try {
-      let item = await Item.findOne({ _id: req.params.id });
-      item.title = req.body.title;
-      item.description = req.body.description;
-      item.save();
+      let post = await Post.findOne({ _id: req.params.id });
+      post.name = req.body.name;
+      post.title = req.body.title;
+      post.post = req.body.post;
+      post.date = req.body.date;
+      post.save();
       res.sendStatus(200);
     }
     catch (error) {

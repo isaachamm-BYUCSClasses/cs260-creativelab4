@@ -1,9 +1,29 @@
 <template>
 <div class="admin">
-      <h1>You can add a blog post here!</h1>
+    <h1>You can add a Firepit post here!</h1>
     <div class="heading">
       <div class="circle">1</div>
-      <h2>First, add a Title</h2>
+      <h2>Add your name</h2>
+    </div>
+    <div class="add">
+      <div class="form">
+        <input v-model="name" placeholder="Your Name">
+        <p></p>
+		</div>
+	</div>
+	<div class="heading">
+      <div class="circle">2</div>
+      <h2>Add a Date / Time</h2>
+    </div>
+    <div class="add">
+      <div class="form">
+        <input v-model="date" placeholder="mm/dd/yy @ 12:00am">
+        <p></p>
+	</div>
+	</div>
+	<div class="heading">
+      <div class="circle">3</div>
+      <h2>Add a Title</h2>
     </div>
     <div class="add">
       <div class="form">
@@ -12,52 +32,52 @@
 	</div>
 	</div>
 	<div class="heading">
-      <div class="circle">2</div>
-      <h2>Second, add a picture</h2>
+      <div class="circle">4</div>
+      <h2>Add a picture</h2>
 	</div>
 	<div class="add">
 		<div class="form">
 			<input type="file" name="photo" @change="fileChanged">
-			<button @click="upload">Upload</button>
     </div>
 	</div>
 	<br>
 	<div class="heading">
-      <div class="circle">3</div>
-      <h2>Third, add some words</h2>
+      <div class="circle">5</div>
+      <h2>Add some words, thoughts, a story, a poem, etc!</h2>
 	</div>
-	
-        <textarea v-model="description" placeholder="Add Item Description Here"></textarea>
+        <textarea class="textInput" v-model="post" placeholder="Add Post Text Here"></textarea>
         <p></p>
-        
-      <div class="upload" v-if="addItem">
-        <h2>{{addItem.title}}</h2>
-        <p>{{addItem.description}}</p>
-        <img :src="addItem.path" />
+        <button @click="upload">Upload Post</button>
+      <div class="upload" v-if="addPost">
+		<h2>{{addPost.title}}</h2>
+		<p>By {{addPost.name}}</p>
+		<p>Posted on {{addPost.date}}</p>
+        <p>{{addPost.post}}</p>
+        <img :src="addPost.path" />
       </div>
     <!-- </div> -->
   <div class="heading">
-      <div class="circle">2</div>
-      <h2>Edit/Delete an Item</h2>
+      <div class="circle">6</div>
+      <h2>Edit/Delete an Post</h2>
     </div>
     <div class="edit">
       <div class="form">
-        <input v-model="findTitle" placeholder="Search">
+        <input v-model="findTitle" placeholder="Search by Title">
         <div class="suggestions" v-if="suggestions.length > 0">
-          <div class="suggestion" v-for="s in suggestions" :key="s.id" @click="selectItem(s)">{{s.title}}
+          <div class="suggestion" v-for="s in suggestions" :key="s.id" @click="selectPost(s)">{{s.title}}
           </div>
         </div>
       </div>
-      <div class="upload" v-if="findItem">
-        <input v-model="findItem.title">
+      <div class="upload" v-if="findPost">
+        <input v-model="findPost.title">
         <p></p>
-        <textarea v-model="findItem.description"></textarea>
+        <textarea v-model="findPost.post"></textarea>
         <p></p>
-        <img :src="findItem.path" />
+        <img :src="findPost.path" />
       </div>
-      <div class="actions" v-if="findItem">
-        <button @click="deleteItem(findItem)">Delete</button>
-        <button @click="editItem(findItem)">Edit</button>
+      <div class="actions" v-if="findPost">
+        <button @click="deletePost(findPost)">Delete</button>
+        <button @click="editPost(findPost)">Edit</button>
       </div>
     </div>
 </div>
@@ -104,9 +124,15 @@ button {
   font-size: 1em;
 }
 
+.textInput {
+  width: 100%;
+  height: 100px;
+}
+
 .form {
   margin-right: 50px;
 }
+
 
 /* Uploaded images */
 .upload h2 {
@@ -131,6 +157,7 @@ button {
   background-color: #5BDEFF;
   color: #fff;
 }
+
 </style>
 
 <script>
@@ -140,22 +167,24 @@ export default {
   data() {
     return {
       title: "",
-      description: "",
+      post: "",
+      name: "",
+      date: "",
       file: null,
-      addItem: null,
-      items: [],
+      addPost: null,
+      posts: [],
       findTitle: "",
-      findItem: null,
+      findPost: null,
     }
   },
   computed: {
     suggestions() {
-      let items = this.items.filter(item => item.title.toLowerCase().startsWith(this.findTitle.toLowerCase()));
-      return items.sort((a, b) => a.title > b.title);
+      let posts = this.posts.filter(post => post.title.toLowerCase().startsWith(this.findTitle.toLowerCase()));
+      return posts.sort((a, b) => a.title > b.title);
     }
   },
   created() {
-    this.getItems();
+    this.getPosts();
   },
   methods: {
     fileChanged(event) {
@@ -166,47 +195,51 @@ export default {
         const formData = new FormData();
         formData.append('photo', this.file, this.file.name)
         let r1 = await axios.post('/api/photos', formData);
-        let r2 = await axios.post('/api/items', {
+        let r2 = await axios.post('/api/posts', {
           title: this.title,
           path: r1.data.path,
-          description: this.description,
+          post: this.post,
+          name: this.name,
+          date: this.date,
         });
-        this.addItem = r2.data;
+        this.addPost = r2.data;
       } catch (error) {
         console.log(error);
       }
     },
-    async getItems() {
+    async getPosts() {
       try {
-        let response = await axios.get("/api/items");
-        this.items = response.data;
+        let response = await axios.get("/api/posts");
+        this.posts = response.data;
         return true;
       } catch (error) {
         console.log(error);
       }
     },
-    selectItem(item) {
+    selectPost(post) {
       this.findTitle = "";
-      this.findItem = item;
+      this.findPost = post;
     },
-    async deleteItem(item) {
+    async deletePost(post) {
       try {
-        await axios.delete("/api/items/" + item._id);
-        this.findItem = null;
-        this.getItems();
+        await axios.delete("/api/posts/" + post._id);
+        this.findPost = null;
+        this.getPosts();
         return true;
       } catch (error) {
         console.log(error);
       }
     },
-    async editItem(item) {
+    async editPost(post) {
       try {
-        await axios.put("/api/items/" + item._id, {
-          title: this.findItem.title,
-          description: this.findItem.description,
+        await axios.put("/api/posts/" + post._id, {
+          title: this.findPost.title,
+          post: this.findPost.post,
+          date: this.findPost.date,
+          name: this.findPost.name,
         });
-        this.findItem = null;
-        this.getItems();
+        this.findPost = null;
+        this.getPosts();
         return true;
       } catch (error) {
         console.log(error);

@@ -1,10 +1,12 @@
 <template>
 <div class="home">
   <section class="image-gallery">
-    <div class="image" v-for="item in items" :key="item.id">
-      <h2>{{item.title}}</h2>
-      <p v-if="item.description">Description: {{item.description}}</p>
-      <img :src="item.path" />
+    <div class="image" v-for="post in posts" :key="post.id">
+      <h2>{{post.title}}</h2>
+      <p>{{post.name}}</p>
+      <p>{{post.date}}</p>
+      <p v-if="post.post">{{post.post}}</p>
+      <img :src="post.path" />
     </div>
   </section>
 </div>
@@ -22,38 +24,14 @@
   box-sizing: inherit;
 }
 
-.image-gallery {
-  column-gap: 1.5em;
-}
-
-.image {
-  margin: 0 0 1.5em;
-  display: inline-block;
+img {
   width: 100%;
-}
-
-.image img {
-  width: 100%;
-}
-
-/* Masonry on large screens */
-@media only screen and (min-width: 1024px) {
-  .image-gallery {
-    column-count: 4;
-  }
-}
-
-/* Masonry on medium-sized screens */
-@media only screen and (max-width: 1023px) and (min-width: 768px) {
-  .image-gallery {
-    column-count: 3;
-  }
 }
 
 /* Masonry on small screens */
-@media only screen and (max-width: 767px) and (min-width: 540px) {
-  .image-gallery {
-    column-count: 2;
+@media only screen and (min-width: 550px) {
+  img {
+    width: 400px;
   }
 }
 </style>
@@ -66,17 +44,17 @@ export default {
   name: 'Posts',
   data() {
     return {
-      items: [],
+      posts: [],
     }
   },
   created() {
-    this.getItems();
+    this.getPosts();
   },
   methods: {
-    async getItems() {
+    async getPosts() {
       try {
-        let response = await axios.get("/api/items");
-        this.items = response.data;
+        let response = await axios.get("/api/posts");
+        this.posts = response.data;
         return true;
       } catch (error) {
         console.log(error);

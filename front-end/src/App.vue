@@ -2,10 +2,12 @@
 <div id="app">
   <div class="header">
     <router-link to="/">
+      <img class="icon" src="../public/images/firepit.png" />
     </router-link>
     <div class="title">
-      <h1>A group blog: Share your thoughts with us!</h1>  
-      <router-link to="/posts">Admin</router-link> |
+      <h1>The firepit: A group blog. Share your thoughts with us!</h1>  
+      <router-link to="/">Home</router-link> |
+      <router-link to="/posts">The Firepit</router-link> |
       <router-link to="/add">Add a post!</router-link>
     </div>
   </div>
@@ -14,7 +16,7 @@
   </div>
   <div class="footer">
     <!-- Add git repository here -->
-    <router-link to="/admin">Admin</router-link>
+    <router-link to="/admin">Github: </router-link>
   </div>
 </div>
 </template>
@@ -36,12 +38,19 @@ body {
 .header {
   display: flex;
   padding: 10px 100px 0px 100px;
-  background-color: #5BDEFF;
+  background-color: #fbb982;
   color: #1C454F;
+}
+
+.icon {
+  width: 40px;
+  margin-top: 20px;
+  margin-right: 20px;
 }
 
 .title {
   margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .title h1 {

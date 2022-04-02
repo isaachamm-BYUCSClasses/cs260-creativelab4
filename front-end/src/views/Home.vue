@@ -1,19 +1,38 @@
 <template>
-<div class="home">
-  <section class="image-gallery">
-    <div class="image" v-for="item in items" :key="item.id">
-      <h2>{{item.title}}</h2>
-      <p v-if="item.description">Description: {{item.description}}</p>
-      <img :src="item.path" />
-    </div>
-  </section>
+<div>
+  <div class="text">
+    <h1>Welcome to the Firepit!</h1>
+    <h2>You might be wondering: </h2> 
+    <h2>What is a group blog?</h2>
+    <h2>How does it work?</h2>
+    <h2>Do I really want to be <i>that</i> person that's always blogging about their life?</h2>
+    <p>Follow the simple tutorial below to learn more!</p>
+    <hr/>
+  </div>
+  <div class="tutorial">
+    <p>1) First, add your name</p>
+    <p>2) Then, come up with a title for your blog post</p>
+      <p>——Example titles include: <i>How to get married in 60 days! (For BYU students),
+            How to live on a budget of $1 / day: My experience,</i> and 
+            <i>Why you should drive Uber: A guide to the ultimate side hustle</i>
+    <p>3) Next, make sure you have a picture ready to upload!</p>
+      <p><i>Something minimalistic to appeal to the audience's attention...</i></p>
+        <img src="../../public/images/DS-WP-2.png" />
+      <p><i>Or something more active to keep them entertained!</i></p>
+        <img src="../../public/images/DS-WP-7.jpg" />
+    <p>4) Don't forget to mark the time and date of the post...</p>
+    <p>5) Finally, write to your heart's content on any topic that comes to mind!</p>
+  </div>
 </div>
 </template>
 
 <style scoped>
-.image h2 {
-  font-style: italic;
+
+.text {
+  text-align: center;
 }
+
+
 
 /* Masonry */
 *,
@@ -32,28 +51,13 @@
   width: 100%;
 }
 
-.image img {
+img {
   width: 100%;
 }
 
-/* Masonry on large screens */
-@media only screen and (min-width: 1024px) {
-  .image-gallery {
-    column-count: 4;
-  }
-}
-
-/* Masonry on medium-sized screens */
-@media only screen and (max-width: 1023px) and (min-width: 768px) {
-  .image-gallery {
-    column-count: 3;
-  }
-}
-
-/* Masonry on small screens */
-@media only screen and (max-width: 767px) and (min-width: 540px) {
-  .image-gallery {
-    column-count: 2;
+@media only screen and (min-width: 550px) {
+  img {
+    width: 400px;
   }
 }
 </style>
@@ -66,17 +70,17 @@ export default {
   name: 'Home',
   data() {
     return {
-      items: [],
+      posts: [],
     }
   },
   created() {
-    this.getItems();
+    this.getPosts();
   },
   methods: {
-    async getItems() {
+    async getPosts() {
       try {
-        let response = await axios.get("/api/items");
-        this.items = response.data;
+        let response = await axios.get("/api/posts");
+        this.posts = response.data;
         return true;
       } catch (error) {
         console.log(error);
